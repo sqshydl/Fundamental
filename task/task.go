@@ -105,3 +105,28 @@ func DeleteTask(id int) error {
 
 	return saveTasks(newTasks)
 }
+
+func EditTask(id int, newTitle string) error {
+	tasks := loadTasks()
+	updated := false
+
+	for i, t := range tasks {
+		if t.Id == id {
+			tasks[i].Title = newTitle
+			updated = true
+			break
+		}
+	}
+
+	if !updated {
+		return fmt.Errorf("task dengan ID %d tidak ditemukan", id)
+	}
+
+	err := saveTasks(tasks)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Task dengan ID %d berhasil diubah.\n", id)
+	return nil
+}

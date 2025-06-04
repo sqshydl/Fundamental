@@ -18,7 +18,8 @@ func main() {
 		fmt.Println("1. Tambah Task")
 		fmt.Println("2. Lihat Semua Task")
 		fmt.Println("3. Hapus Task")
-		fmt.Println("4. Keluar")
+		fmt.Println("4. Edit Task")
+		fmt.Println("5. Keluar")
 		fmt.Print("Pilih menu: ")
 		scanner.Scan()
 		choice := strings.TrimSpace(scanner.Text())
@@ -52,6 +53,23 @@ func main() {
 				fmt.Println("Task berhasil dihapus.")
 			}
 		case "4":
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Print("Masukkan ID task yang ingin diedit: ")
+			idStr, _ := reader.ReadString('\n')
+			idStr = strings.TrimSpace(idStr)
+			id, err := strconv.Atoi(idStr)
+			if err != nil {
+				fmt.Println("ID tidak valid")
+				return
+			}
+			fmt.Print("Masukkan judul baru: ")
+			newTitle, _ := reader.ReadString('\n')
+			newTitle = strings.TrimSpace(newTitle)
+			err = task.EditTask(id, newTitle)
+			if err != nil {
+				fmt.Println(err)
+			}
+		case "5":
 			fmt.Println("Keluar dari aplikasi. 👋")
 			return
 		default:
