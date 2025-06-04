@@ -5,8 +5,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strconv"
+	"sync"
 )
+
+type autoInc struct {
+	sync.Mutex
+	id int
+}
+
+func (ai *autoInc) ID() (id int) {
+	ai.Lock()
+	defer ai.Unlock()
+
+	id = ai.id
+	ai.id++
+	return
+}
 
 type Task struct {
 	Id        int    `json:"id"`
@@ -15,25 +29,28 @@ type Task struct {
 }
 
 func main() {
+	ai := autoInc{}
 
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Print("Insert your Title: ")
 	scanner.Scan()
 	temp := scanner.Text()
 
-	task := Task{Id: 1, Title: temp, Completed: false}
+	task := Task{Id: ai.ID(), Title: temp, Completed: false}
 
-	a, err := json.Marshal(task)
+	a, err := json.MarshalIndent(task, "", "  ")
 	if err != nil {
 		fmt.Println("Error marshaling JSON :", err)
 		return
 	}
 	fmt.Println(string(a))
 
-	filename := "Task_" + strconv.Itoa(task.Id) + ".json"
-	file, err := os.Create(filename)
+	os.MkdirAll("storage", os.ModePerm)
+
+	// Open file for writing/appending
+	file, err := os.OpenFile("storage/Task.json", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
-		fmt.Println("Error creating File: ", err)
+		fmt.Println("Error at opening file", err)
 		return
 	}
 	defer file.Close()
@@ -43,4 +60,5 @@ func main() {
 		fmt.Println("Error Wrting FIle : ", err)
 		return
 	}
+	fmt.Println("Data berhasil di buat Di : Storage/Task.json")
 }
