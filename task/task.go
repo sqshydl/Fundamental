@@ -49,7 +49,6 @@ func loadTasks() []Task {
 
 	data, err := os.ReadFile(filename)
 	if err != nil {
-		// Kalau file belum ada, kembalikan slice kosong
 		return []Task{}
 	}
 
@@ -69,4 +68,12 @@ func saveTasks(tasks []Task) error {
 	}
 
 	return os.WriteFile("storage/Task.json", data, 0644)
+}
+
+func readTask() error {
+
+}
+
+func deleteTask() {
+
 }

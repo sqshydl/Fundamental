@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"fundamentals/task" // change this to match your go.mod module name
+	"fundamentals/task"
 )
 
 func main() {
