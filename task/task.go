@@ -71,7 +71,7 @@ func saveTasks(tasks []Task) error {
 	return os.WriteFile("storage/Task.json", data, 0644)
 }
 
-func readTasks() {
+func ReadTasks() {
 	tasks := loadTasks()
 	if len(tasks) == 0 {
 		fmt.Println("Belum ada task.")
@@ -87,6 +87,22 @@ func readTasks() {
 	}
 }
 
-func deleteTask() {
+func DeleteTask(id int) error {
+	tasks := loadTasks()
+	newTasks := []Task{}
 
+	found := false
+	for _, t := range tasks {
+		if t.Id != id {
+			newTasks = append(newTasks, t)
+		} else {
+			found = true
+		}
+	}
+
+	if !found {
+		return fmt.Errorf("task dengan ID %d tidak ditemukan", id)
+	}
+
+	return saveTasks(newTasks)
 }
